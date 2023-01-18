@@ -20,15 +20,36 @@ function load() {
 	data = localStorage.getItem("data");
 	dataobj = window.atob(data);
 	dataobj = JSON.parse(dataobj);
-	console.log(dataobj);
 	bm_str = "";
-	bm_str += `<button onclick="toggle_edit()">Edit Mode</button>`;
 
 	if (dataobj.data.length < 1) {
 		bm_str += `<p>You have no birthdays added yet! Toggle Edit Mode to add some!</p>`;
-	}
+		bm_str += `<button onclick="toggle_edit()">Edit Mode</button>`;
+	} else {
+		bm_arr = create_bm();
+		// a = sorted daysleft
+		// b = sorted indexes
+		bm_str += `<div id="nextup"><h2 class="nextup">Next up: ${dataobj.data[bm_arr.b[0]].name}!</h2>`
+		if (bm_arr.a[0] == 0) {
+			bm_str += `<h3 class="nextup">Today!</h3>`
+		} else {
+			bm_str += `<h3 class="nextup">In ${bm_arr.a[0]} days</h3>`
+		}
+		dd = `${dataobj.data[bm_arr.b[0]].birthday}/${current_date.getFullYear()}`;
+		d = new Date(dd);
+		if ((d.getTime() < current_date.getTime()) && bm_arr.a[0] != 0) {
+			dd = `${dataobj.data[bm_arr.b[0]].birthday}/${current_date.getFullYear() + 1}`;
+		}
+		bm_str += `<p class="nextup">${dd}</p></div>`
 
-	create_bm();
+		bm_str += `<button style="display: block;" onclick="toggle_edit()">Edit Mode</button>`;
+
+		bm_str += `<table id="birthday_table"><tr><th>Name</th><th>Days Left</th><th>Birthdate</th></tr>`;
+		for(i=0; i < dataobj.data.length; i++) {
+			bm_str += `<tr><td>${dataobj.data[bm_arr.b[i]].name}</td><td>${bm_arr.a[i]}</td><td>${dataobj.data[bm_arr.b[i]].birthday}</td></tr>`;
+		}
+		bm_str += `</table>`;
+	}
 
 
 	document.getElementById('main_container').innerHTML = bm_str;
@@ -54,6 +75,8 @@ function edit_load() {
 	edit_str += `<table id="edit_table"><tr><th>Name</th><th>Birthdate</th><th>Edit</th></tr>`;
 	edit_str += get_edit_table();
 	edit_str += `</table>`;
+	edit_str += get_edit_settings();
+	
 
 	document.getElementById("edit_container").innerHTML = edit_str;
 }
@@ -62,15 +85,70 @@ function get_edit_table() {
 	table_str = ``;
 	for (i = 0; i < dataobj.data.length; i++) {
 		table_str += `<tr>`
-		table_str += `<td>${dataobj.data[i].name}</td>`
-		table_str += `<td>${dataobj.data[i].birthday}</td>`
-		table_str += `<td><button class="table_button">Edit</button></td></tr>`
+		table_str += `<td>`
+		table_str += `<div id="name${i}">${dataobj.data[i].name}</div>`
+		table_str += `<div style="display: none;" id="name_edit${i}">`
+		table_str += `<input id="input_edit_name${i}" type="text" placeholder="Name" value="${dataobj.data[i].name}"></div>`
+		table_str += `</td>`
+		table_str += `<td>`
+		table_str += `<div id="day${i}">${dataobj.data[i].birthday}</div>`
+		table_str += `<div style="display: none;" id="day_edit${i}">`
+		table_str += `<input id="input_edit_day${i}" type="text" placeholder="Birthday (MM/DD)" value="${dataobj.data[i].birthday}"></div>`
+		table_str += `</td>`
+		table_str += `<td>`
+		table_str += `<div id="edit${i}"><button onclick="toggle_table_edit(${i})" class="table_button">Edit</button></div>`
+		table_str += `<div style="display: none;" id="edit_edit${i}">`
+		table_str += `<button class="table_button" onclick="delete_day(${i})">X</button>`
+		table_str += `<button class="table_button" onclick="save_edit(${i})">Done</button>`
+		table_str += `</div></td>`
+		table_str += `</tr>`
 	}
 	table_str += `<tr><td><input id="input_name" type="text" placeholder="Name"></td>`
 	table_str += `<td><input id="input_day" type="text" placeholder="Birthday (MM/DD)"></td>`
 	table_str += `<td><button class="table_button" onclick="add_birthday()">Add</button></td></tr>`
 
 	return table_str;
+}
+
+function get_edit_settings() {
+	return;
+}
+
+function toggle_table_edit(id) {
+	document.getElementById(`name${id}`).style.display = "none";
+	document.getElementById(`day${id}`).style.display = "none";
+	document.getElementById(`edit${id}`).style.display = "none";
+	
+	document.getElementById(`name_edit${id}`).style.display = "block";
+	document.getElementById(`day_edit${id}`).style.display = "block";
+	document.getElementById(`edit_edit${id}`).style.display = "block";
+}
+
+function delete_day(id) {
+	dataobj.data.splice(id, 1);
+	edit_load();
+}
+
+function save_edit(id) {
+	sname = document.getElementById(`input_edit_name${id}`).value;
+	sday = document.getElementById(`input_edit_day${id}`).value;
+	d = new Date(sday);
+	if (d == "Invalid Date") {
+		return;
+	}
+
+	dataobj.data[id].name = sname;
+	dataobj.data[id].birthday = sday;
+
+	document.getElementById(`name${id}`).style.display = "block";
+	document.getElementById(`day${id}`).style.display = "block";
+	document.getElementById(`edit${id}`).style.display = "block";
+	
+	document.getElementById(`name_edit${id}`).style.display = "none";
+	document.getElementById(`day_edit${id}`).style.display = "none";
+	document.getElementById(`edit_edit${id}`).style.display = "none";
+
+	edit_load();
 }
 
 function add_birthday() {
@@ -115,20 +193,27 @@ function create_bm() {
 		days_difference = time_difference / (1000 * 60 * 60 * 24);
 		days_difference = Math.ceil(days_difference);
 		if (days_difference == 365) { days_difference = 0; }
-
 		bm_daysleft.push(days_difference);
 	}
 
-	console.log(bm_daysleft);
+	bm_indexsort = [];
+	for (i = 0; i < bm_daysleft.length; i++) {
+		bm_indexsort.push(bm_daysleft[i]);
+	}
+
+	bm_indexsort.sort(function(a, b) { return a - b });
+	bm_index = [];
+
+	for (i = 0; i < dataobj.data.length; i++) { // i = 0
+		bm_index.push(0);
+	}
+
+	for (i = 0; i < dataobj.data.length; i++) {
+		for (n = 0; n < dataobj.data.length; n++) {
+			if (bm_daysleft[i] == bm_indexsort[n]) {
+				bm_index[n] = i;
+			}
+		}
+	}
+	return {a:bm_indexsort,b:bm_index};
 }
-
-/*
-
-NEXT UP:
-+ make clone of bm_daysleft, sort it, and replace the clone's numbers with the index of the birthday by comparing the clone's numbers with the original
-
-+ go from there
-
-
-
-*/

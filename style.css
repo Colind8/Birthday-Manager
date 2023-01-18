@@ -38,6 +38,7 @@ button.bad {
 
 #nextup {
 	background-color: #1d1d35;
+	display: inline-block;
 	padding: 5px;
 	border-style: solid;
 	border-color: #49496f;
