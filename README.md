@@ -1,5 +1,5 @@
 # Birthday Manager
-Birthday Manager allows you to easily display birthdays you have saved. It is used to quicky find out who's birthday is coming up.
+Birthday Manager allows you to easily keep track of birthdays. It is used to quicky find out who's birthday is coming up.
 
 ## How to use
 ### How to add birthdays
