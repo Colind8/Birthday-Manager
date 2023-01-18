@@ -71,7 +71,7 @@ function toggle_edit() {
 function edit_load() {
 	edit_str = ``;
 	edit_str += `<button onclick="edit_save()" class="good">Save and return</button> `;
-	edit_str += `<button onclick="edit_quit()" class="bad">Return without saving</button>`
+	edit_str += `<button onclick="edit_quit()" class="bad">Return without saving</button>`;
 	edit_str += `<table id="edit_table"><tr><th>Name</th><th>Birthdate</th><th>Edit</th></tr>`;
 	edit_str += get_edit_table();
 	edit_str += `</table>`;
@@ -111,7 +111,15 @@ function get_edit_table() {
 }
 
 function get_edit_settings() {
-	return;
+	settings_str = ``;
+	settings_str += `<fieldset><legend>Settings</legend>`;
+	settings_str += `<div><label>Save Data</label> `;
+	settings_str += `<input id="savedata" value="${data}"> `;
+	settings_str += `<button onclick="load_save()">Load</button>`;
+	settings_str += `<p>Use the Save Data text box above to import or export your Birthday Manager Save Data by copying or pasting the code. Press the Load button to load the code.</p>`;
+	settings_str += `<button onclick="delete_save()" class="bad">Delete savedata</button>`;
+	settings_str += `</fieldset>`;
+	return settings_str;
 }
 
 function toggle_table_edit(id) {
@@ -216,4 +224,16 @@ function create_bm() {
 		}
 	}
 	return {a:bm_indexsort,b:bm_index};
+}
+
+function delete_save() {
+	localStorage.removeItem("data");
+	location.reload();
+}
+
+function load_save(){
+	data = document.getElementById("savedata").value;
+	dataobj = window.atob(data);
+	dataobj = JSON.parse(dataobj);
+	edit_load();
 }

@@ -15,3 +15,15 @@ Birthday Manager allows you to easily keep track of birthdays. It is used to qui
 4. When done with changes, click the "Done" button.
 5. Repeat steps 2-4 for all the birthdays you wish to edit
 6. Click "Save and return" to save your changes and exit Edit Mode
+### How to share Birthday Manager savedata
+1. Toggle Edit Mode
+2. Scroll down to the "Settings" box
+3. Copy the code in the Save Data box
+4. Share the code with whomever needs it
+### How to load a Birthday Manager savedata code
+1. Toggle Edit Mode
+2. Scroll down to the "Settings" box
+3. Paste the code into the Save Data box
+4. Click Load
+5. Ensure the data loaded correctly by checking the table. If not, you can try again or click "Return without saving" to undo your changes.
+6. If everything is correct, click "Save and return" to save your changes and exit Edit Mode.
