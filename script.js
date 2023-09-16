@@ -45,7 +45,7 @@ function load() {
 		bm_str += `<button style="display: block;" onclick="toggle_edit()">Edit Mode</button>`;
 
 		bm_str += `<table id="birthday_table"><tr><th>Name</th><th>Days Left</th><th>Birthdate</th></tr>`;
-		for(i=0; i < dataobj.data.length; i++) {
+		for (i = 0; i < dataobj.data.length; i++) {
 			bm_str += `<tr><td>${dataobj.data[bm_arr.b[i]].name}</td><td>${bm_arr.a[i]}</td><td>${dataobj.data[bm_arr.b[i]].birthday}</td></tr>`;
 		}
 		bm_str += `</table>`;
@@ -76,7 +76,7 @@ function edit_load() {
 	edit_str += get_edit_table();
 	edit_str += `</table>`;
 	edit_str += get_edit_settings();
-	
+
 
 	document.getElementById("edit_container").innerHTML = edit_str;
 }
@@ -126,7 +126,7 @@ function toggle_table_edit(id) {
 	document.getElementById(`name${id}`).style.display = "none";
 	document.getElementById(`day${id}`).style.display = "none";
 	document.getElementById(`edit${id}`).style.display = "none";
-	
+
 	document.getElementById(`name_edit${id}`).style.display = "block";
 	document.getElementById(`day_edit${id}`).style.display = "block";
 	document.getElementById(`edit_edit${id}`).style.display = "block";
@@ -151,7 +151,7 @@ function save_edit(id) {
 	document.getElementById(`name${id}`).style.display = "block";
 	document.getElementById(`day${id}`).style.display = "block";
 	document.getElementById(`edit${id}`).style.display = "block";
-	
+
 	document.getElementById(`name_edit${id}`).style.display = "none";
 	document.getElementById(`day_edit${id}`).style.display = "none";
 	document.getElementById(`edit_edit${id}`).style.display = "none";
@@ -200,7 +200,8 @@ function create_bm() {
 		//calculate days difference by dividing total milliseconds in a day  
 		days_difference = time_difference / (1000 * 60 * 60 * 24);
 		days_difference = Math.ceil(days_difference);
-		if (days_difference == 365) { days_difference = 0; }
+		if (days_difference >= 365) { days_difference = 0; }
+		console.log(days_difference);
 		bm_daysleft.push(days_difference);
 	}
 
@@ -223,7 +224,7 @@ function create_bm() {
 			}
 		}
 	}
-	return {a:bm_indexsort,b:bm_index};
+	return { a: bm_indexsort, b: bm_index };
 }
 
 function delete_save() {
@@ -231,7 +232,7 @@ function delete_save() {
 	location.reload();
 }
 
-function load_save(){
+function load_save() {
 	data = document.getElementById("savedata").value;
 	dataobj = window.atob(data);
 	dataobj = JSON.parse(dataobj);
