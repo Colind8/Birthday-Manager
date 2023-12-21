@@ -162,7 +162,7 @@ function save_edit(id) {
 function add_birthday() {
 	sname = document.getElementById("input_name").value;
 	sday = document.getElementById("input_day").value;
-	d = new Date(sday);
+	d = new Date(`${sday}/2000`);
 	if (d == "Invalid Date") {
 		return;
 	}
